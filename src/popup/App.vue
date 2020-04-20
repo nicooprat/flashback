@@ -10,7 +10,7 @@
       <Item
         v-for="(history, index) in histories"
         :key="history.id"
-        :search="search"
+        :search="searchDelayed"
         :history="history"
         :hasFocus="index === focus"
         @focus="focus = index"
@@ -46,6 +46,7 @@ export default {
   data () {
     return {
       search: '',
+      searchDelayed: '',
       histories: [],
       focus: 0,
       isInitialLoading: true,
@@ -73,9 +74,10 @@ export default {
       this.limit = LIMIT_INTERVAL
       this.queryHistory().then(() => {
         this.focus = 0
+        this.searchDelayed = this.search // Update children only after results displayed
         window.scrollTo(0, 0) // Force scroll to top without animation
       })
-    }, 150),
+    }, 200),
     isInitialLoading(isInitialLoading) {
       if (!isInitialLoading) {
         this.observer.observe(this.$refs.intersect)
