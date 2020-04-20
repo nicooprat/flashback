@@ -18,8 +18,8 @@
       />
     </nav>
     <div ref="intersect" />
-    <div v-if="loadingText" class="text-gray-500 py-2 px-4">
-      {{ loadingText }}
+    <div v-if="canLoadMore" class="text-gray-500 py-2 px-4">
+      Loading previous items...
     </div>
   </form>
 </template>
@@ -35,7 +35,9 @@ const debounce = (fn, wait = 1) => {
   }
 }
 
-const INTERVALS = ['day', 'week', 'month', 'year']
+const LIMIT_INTERVAL = 10
+const today = new Date()
+const startTime = today.setYear(today.getYear() - 1)
 
 export default {
   components: {
@@ -46,21 +48,16 @@ export default {
       search: '',
       histories: [],
       focus: 0,
-      interval: 'day',
       isInitialLoading: true,
       isLoading: true,
+      canLoadMore: true,
+      limit: LIMIT_INTERVAL,
     }
   },
   computed: {
     focusedUrl() {
       return this.histories[this.focus].url
     },
-    loadingText() {
-      if (this.interval === INTERVALS[INTERVALS.length] && !this.isInitialLoading) {
-        return
-      }
-      return `Loading previous ${this.interval}...`
-    }
   },
   watch: {
     focus() {
@@ -72,11 +69,13 @@ export default {
       })
     },
     search: debounce(function debounced() {
-      this.interval = INTERVALS[0]
+      this.canLoadMore = true
+      this.limit = LIMIT_INTERVAL
       this.queryHistory().then(() => {
         this.focus = 0
+        window.scrollTo(0, 0) // Force scroll to top without animation
       })
-    }, 300),
+    }, 150),
     isInitialLoading(isInitialLoading) {
       if (!isInitialLoading) {
         this.observer.observe(this.$refs.intersect)
@@ -86,12 +85,9 @@ export default {
   mounted() {
     this.queryHistory()
     this.observer = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && !this.isInitialLoading) {
-        const index = INTERVALS.findIndex(i => i === this.interval)
-        if (index < INTERVALS.length - 1) {
-          this.interval = INTERVALS[index + 1]
-          this.queryHistory()
-        }
+      if (entries[0].isIntersecting && !this.isInitialLoading && this.canLoadMore) {
+        this.limit += LIMIT_INTERVAL
+        this.queryHistory()
       }
     })
   },
@@ -114,21 +110,12 @@ export default {
     queryHistory() {
       this.isInitialLoading = true
       return new Promise((resolve, reject) => {
-        const startTime = new Date()
-        if (this.interval === 'day') {
-          startTime.setDate(startTime.getDate() - 1)
-        }
-        if (this.interval === 'week') {
-          startTime.setDate(startTime.getDate() - 7)
-        }
-        if (this.interval === 'month') {
-          startTime.setMonth(startTime.getMonth() - 1)
-        }
-        if (this.interval === 'year') {
-          startTime.setYear(startTime.getYear() - 1)
-        }
-        chrome.history.search({ text: this.search, maxResults: 0, startTime: startTime.getTime() }, histories => {
-          this.histories = histories
+        chrome.history.search({ text: this.search, maxResults: this.limit, startTime }, histories => {
+          if (histories.length === this.histories.length) {
+            this.canLoadMore = false
+          } else {
+            this.histories = histories
+          }
           this.isInitialLoading = false
           this.isLoading = false
           resolve(histories)
