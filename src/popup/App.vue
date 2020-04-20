@@ -113,11 +113,10 @@ export default {
       this.isInitialLoading = true
       return new Promise((resolve, reject) => {
         chrome.history.search({ text: this.search, maxResults: this.limit, startTime }, histories => {
-          if (histories.length === this.histories.length) {
+          if (histories.length === this.histories.length && this.search === this.searchDelayed) {
             this.canLoadMore = false
-          } else {
-            this.histories = histories
           }
+          this.histories = histories
           this.isInitialLoading = false
           this.isLoading = false
           resolve(histories)
