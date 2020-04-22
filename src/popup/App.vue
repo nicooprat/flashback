@@ -17,10 +17,13 @@
         @open="open"
       />
     </nav>
-    <div ref="intersect" />
-    <div v-if="canLoadMore" class="text-gray-500 py-2 px-4">
+    <p v-else-if="!canLoadMore" class="text-gray-500 py-2 px-4">
+      No result
+    </p>
+    <p v-if="canLoadMore" class="text-gray-500 py-2 px-4">
       Loading previous items...
-    </div>
+    </p>
+    <div ref="intersect" />
   </form>
 </template>
 
