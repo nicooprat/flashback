@@ -38,9 +38,9 @@ const debounce = (fn, wait = 1) => {
   }
 }
 
-const LIMIT_INTERVAL = 10
-const today = new Date()
-const startTime = today.setYear(today.getYear() - 1)
+// Get 50 by 50 items from 1 year max
+const LIMIT_INTERVAL = 50
+const START_TIME = new Date().setYear(new Date().getYear() - 1)
 
 export default {
   components: {
@@ -94,7 +94,7 @@ export default {
         this.limit += LIMIT_INTERVAL
         this.queryHistory()
       }
-    })
+    }, { rootMargin: '50% 0px' })
   },
   methods: {
     open(e) {
@@ -115,7 +115,7 @@ export default {
     queryHistory() {
       this.isInitialLoading = true
       return new Promise((resolve, reject) => {
-        chrome.history.search({ text: this.search, maxResults: this.limit, startTime }, histories => {
+        chrome.history.search({ text: this.search, maxResults: this.limit, startTime: START_TIME }, histories => {
           if (histories.length === this.histories.length && this.search === this.searchDelayed) {
             this.canLoadMore = false
           }
