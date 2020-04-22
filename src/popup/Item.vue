@@ -13,9 +13,7 @@
         <span class="date" v-for="date in formattedDate" :key="date" v-text="date" />
       </span>
     </span>
-    <small class="block text-gray-600 text-xs underline truncate">
-      {{ history.url }}
-    </small>
+    <small class="block text-gray-600 text-xs underline truncate" v-html="formattedUrl" />
   </a>
 </template>
 
@@ -42,6 +40,12 @@ export default {
       }
       return this.history.title.replace(new RegExp(this.search, "gi"), (match) => `<mark>${match}</mark>`);
     },
+    formattedUrl() {
+      if (!this.search) {
+        return this.history.url
+      }
+      return this.history.url.replace(new RegExp(this.search, "gi"), (match) => `<mark>${match}</mark>`);
+    },
     formattedDate() {
       const date = new Intl.DateTimeFormat(navigator.language).format(this.history.lastVisitTime)
       return date.split('/')
@@ -51,6 +55,7 @@ export default {
 </script>
 
 <style scoped>
+/* https://tailwindcss.com/docs/customizing-colors/#gray */
 a:hover,
 a:focus,
 a.has-focus {
@@ -58,7 +63,9 @@ a.has-focus {
   outline: none;
 }
 
-mark {
+/* https://tailwindcss.com/docs/customizing-colors/#yellow */
+/* /deep/ needed as mark are added by the component and isn't data-v */
+a /deep/ mark {
   background: #FEFCBF;
 }
 
