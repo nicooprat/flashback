@@ -1,8 +1,8 @@
 {
-  "name": "",
+  "name": "flashback",
   "version": "1.0.0",
-  "description": "",
-  "author": "",
+  "description": "Browser extension to get back in history in a flash",
+  "author": "nicooprat@gmail.com",
   "engines": {
     "node": ">=10"
   },

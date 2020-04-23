@@ -1,14 +1,14 @@
 {
-  "name": "",
-  "description": "",
-  "version": null,
+  "name": "FlashBack",
+  "description": "Get back in browser history in a flash",
+  "version": "1.0.0",
   "manifest_version": 2,
   "icons": {
     "48": "icons/icon_48.png",
     "128": "icons/icon_128.png"
   },
   "browser_action": {
-    "default_title": "",
+    "default_title": "FlashBack",
     "default_popup": "popup/popup.html"
   },
   "commands": {
