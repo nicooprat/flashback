@@ -1,6 +1,6 @@
 <template>
   <form
-    class="text-gray-800"
+    class="text-gray-800 text-sm"
     @keydown.up.prevent.stop="up"
     @keydown.down.prevent.stop="down"
     @keydown.enter.prevent.stop="open"
