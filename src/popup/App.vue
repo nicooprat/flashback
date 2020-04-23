@@ -99,11 +99,11 @@ export default {
   methods: {
     open(e) {
       if (e.metaKey || e.ctrlKey) {
-        chrome.tabs.create({ url: this.focusedUrl })
+        browser.tabs.create({ url: this.focusedUrl })
         return
       }
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.tabs.update(tabs[0].id, { url: this.focusedUrl })
+      browser.tabs.query({ active: true, currentWindow: true }).then(tabs => {
+        browser.tabs.update(tabs[0].id, { url: this.focusedUrl })
       })
     },
     up() {
@@ -114,16 +114,13 @@ export default {
     },
     queryHistory() {
       this.isInitialLoading = true
-      return new Promise((resolve, reject) => {
-        chrome.history.search({ text: this.search, maxResults: this.limit, startTime: START_TIME }, histories => {
-          if (histories.length === this.histories.length && this.search === this.searchDelayed) {
-            this.canLoadMore = false
-          }
-          this.histories = histories
-          this.isInitialLoading = false
-          this.isLoading = false
-          resolve(histories)
-        })
+      return browser.history.search({ text: this.search, maxResults: this.limit, startTime: START_TIME }).then(histories => {
+        if (histories.length === this.histories.length && this.search === this.searchDelayed) {
+          this.canLoadMore = false
+        }
+        this.histories = histories
+        this.isInitialLoading = false
+        this.isLoading = false
       })
     }
   }
