@@ -59,14 +59,13 @@ export default {
 a:hover,
 a:focus,
 a.has-focus {
-  background: #EDF2F7;
-  outline: none;
+  @apply bg-gray-200 outline-none;
 }
 
 /* https://tailwindcss.com/docs/customizing-colors/#yellow */
 /* /deep/ needed as mark are added by the component and isn't data-v */
 a /deep/ mark {
-  background: #FEFCBF;
+  @apply bg-yellow-200;
 }
 
 .date:not(:last-child):after {
@@ -77,5 +76,3 @@ a /deep/ mark {
 }
 
 </style>
-
-<style src="../assets/tailwind.css">
