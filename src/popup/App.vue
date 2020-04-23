@@ -5,8 +5,15 @@
     @keydown.down.prevent.stop="down"
     @keydown.enter.prevent.stop="open"
   >
-    <input class="w-full py-2 px-4 border-b border-gray-200 sticky top-0 z-10 focus:outline-none" type="text" autofocus placeholder="Search history..." v-model="search">
-    <nav v-if="histories.length" ref="nav">
+    <input
+      class="w-full py-2 px-4 border-b border-gray-200 sticky top-0 z-10 focus:outline-none"
+      type="text"
+      autofocus
+      placeholder="Search history..."
+      v-model="search"
+      @input="handleInput"
+    >
+    <nav v-if="histories.length" ref="nav" :class="{ 'opacity-50': isInitialLoading }">
       <Item
         v-for="(history, index) in histories"
         :key="history.id"
@@ -75,7 +82,8 @@ export default {
     search: debounce(function debounced() {
       this.canLoadMore = true
       this.limit = LIMIT_INTERVAL
-      this.queryHistory().then(() => {
+      this.queryHistory().then((histories) => {
+        console.log(histories)
         this.focus = 0
         this.searchDelayed = this.search // Update children only after results displayed
         window.scrollTo(0, 0) // Force scroll to top without animation
@@ -97,6 +105,9 @@ export default {
     }, { rootMargin: '50% 0px' })
   },
   methods: {
+    handleInput() {
+      this.isInitialLoading = true
+    },
     open(e) {
       if (e.metaKey || e.ctrlKey) {
         browser.tabs.create({ url: this.focusedUrl })
@@ -113,7 +124,7 @@ export default {
       this.focus = this.focus < this.histories.length - 1 ? this.focus + 1 : 0
     },
     queryHistory() {
-      this.isInitialLoading = true
+      this.isLoading = true
       return browser.history.search({ text: this.search, maxResults: this.limit, startTime: START_TIME }).then(histories => {
         if (histories.length === this.histories.length && this.search === this.searchDelayed) {
           this.canLoadMore = false
@@ -121,6 +132,7 @@ export default {
         this.histories = histories
         this.isInitialLoading = false
         this.isLoading = false
+        return histories
       })
     }
   }
