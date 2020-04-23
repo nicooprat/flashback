@@ -40,7 +40,7 @@ const debounce = (fn, wait = 1) => {
 
 // Get 50 by 50 items from 1 year max
 const LIMIT_INTERVAL = 50
-const START_TIME = new Date().setYear(new Date().getYear() - 1)
+const START_TIME = new Date().setFullYear(new Date().getFullYear() - 1)
 
 export default {
   components: {
