@@ -38,17 +38,22 @@ export default {
       if (!this.search) {
         return this.history.title
       }
-      return this.history.title.replace(new RegExp(this.search, "gi"), (match) => `<mark>${match}</mark>`);
+      return this.replaceMark(this.history.title, this.search)
     },
     formattedUrl() {
       if (!this.search) {
         return this.history.url
       }
-      return this.history.url.replace(new RegExp(this.search, "gi"), (match) => `<mark>${match}</mark>`);
+      return this.replaceMark(this.history.url, this.search)
     },
     formattedDate() {
       const date = new Intl.DateTimeFormat(navigator.language).format(this.history.lastVisitTime)
       return date.split('/')
+    }
+  },
+  methods: {
+    replaceMark(text, search) {
+      return text.replace(new RegExp(search.replace(' ', '|'), "gi"), (match) => `<mark>${match}</mark>`)
     }
   }
 }
