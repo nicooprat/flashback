@@ -1,5 +1,7 @@
+import '../assets/popup.css'
 import Vue from 'vue'
 import App from './App'
+
 
 global.browser = require('webextension-polyfill')
 
