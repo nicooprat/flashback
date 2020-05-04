@@ -1,6 +1,6 @@
 <template>
   <a
-    class="item block py-2 px-4"
+    class="item block py-2 px-4 relative"
     :class="{ 'has-focus': hasFocus }"
     :href="history.url"
     :title="history.url"
@@ -9,11 +9,17 @@
   >
     <span class="flex">
       <strong v-if="history.title" v-html="formattedTitle" />
-      <span class="ml-auto pl-2 font-semibold text-gray-500">
+      <span class="ml-auto pl-2 font-semibold text-gray-500 text-xs">
         <span class="date" v-for="date in formattedDate" :key="date" v-text="date" />
       </span>
     </span>
     <small class="block text-gray-600 text-xs underline truncate" v-html="formattedUrl" />
+    <transition name="fade-out">
+      <span v-if="hasCopied" class="flex items-center justify-center text-center absolute inset-0 bg-gray-200 text-gray-600">
+        <svg class="opacity-75" width="12" height="12" viewBox="0 0 24 24"><path fill="currentColor" d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"/></svg>
+        <strong class="uppercase font-semibold ml-2 text-xs">URL copied</strong>
+      </span>
+    </transition>
   </a>
 </template>
 
@@ -29,6 +35,10 @@ export default {
       default: '',
     },
     hasFocus: {
+      type: Boolean,
+      default: false,
+    },
+    hasCopied: {
       type: Boolean,
       default: false,
     },
@@ -80,4 +90,11 @@ a /deep/ mark {
   margin-right: 0.1em;
 }
 
+.fade-out-leave-active {
+  transition: opacity 300ms;
+}
+
+.fade-out-leave-to {
+  opacity: 0;
+}
 </style>

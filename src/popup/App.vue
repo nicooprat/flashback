@@ -20,6 +20,7 @@
         :search="searchDelayed"
         :history="history"
         :hasFocus="index === focus"
+        :hasCopied="copied === index"
         @focus="focus = index"
         @open="open"
       />
@@ -63,6 +64,7 @@ export default {
       isLoading: true,
       canLoadMore: true,
       limit: LIMIT_INTERVAL,
+      copied: null,
     }
   },
   computed: {
@@ -109,10 +111,22 @@ export default {
       this.isInitialLoading = true
     },
     open(e) {
+      // CMD (Mac) || Ctrl (Windows/Linux) -> open in new tab
       if (e.metaKey || e.ctrlKey) {
         browser.tabs.create({ url: this.focusedUrl })
         return
       }
+      // Alt -> copy URL
+      if (e.altKey) {
+        navigator.clipboard.writeText(this.focusedUrl).then(() => {
+          this.copied = this.focus
+          setTimeout(() => {
+            this.copied = null
+          }, 1000);
+        })
+        return
+      }
+      // Else -> open in current tab
       browser.tabs.query({ active: true, currentWindow: true }).then(tabs => {
         browser.tabs.update(tabs[0].id, { url: this.focusedUrl })
       })
