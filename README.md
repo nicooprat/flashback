@@ -2,7 +2,14 @@
 
 ## Usage
 
-This is a cross-browser extension that allows to quickly search through recent history. Simply hit `CTRL/CMD + SHIFT + Y` and start searching, navigate through the list with `UP/DOWN` arrows, then hit `ENTER` to open the link in current tab, or `CTRL/CMD + ENTER` to open it in a new tab.
+This is a cross-browser extension that allows to quickly search through recent history (up to one year in the past):
+
+* Simply hit `CTRL/CMD + SHIFT + Y` in your browser
+* Search for one or more words
+* Navigate through the list with `UP/DOWN` arrows
+* Git `ENTER` to open the link in current tab
+* or `CTRL/CMD + ENTER` to open it in a new tab
+* or `ALT + ENTER` to only copy focused URL
 
 ## Installation
 
@@ -10,7 +17,7 @@ Get the [Firefox addon](https://addons.mozilla.org/…/flash-back) or the [Chrom
 
 ## Privacy
 
-This extension needs access to `history` and `tabs`. You're welcome to read the source code to be sure no informations gets out of your browser when using it.
+This extension needs access to `history` and `tabs`. You're welcome to read the source code to be sure no informations get out of your browser when using it.
 
 ## Contributing
 
